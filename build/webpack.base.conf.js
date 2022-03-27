@@ -1,9 +1,6 @@
 'use strict'
 const path = require('path')
-const utils = require('./utils')
 const config = require('../config')
-const vueLoaderConfig = require('./vue-loader.conf')
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 // const ESLintPlugin = require('eslint-webpack-plugin');
 
@@ -11,16 +8,16 @@ function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
-// const createLintingRule = () => ({
-//   test: /\.(js|vue)$/,
-//   loader: 'eslint-loader',
-//   enforce: 'pre',
-//   include: [resolve('src'), resolve('test')],
-//   options: {
-//     formatter: require('eslint-friendly-formatter'),
-//     emitWarning: !config.dev.showEslintErrorsInOverlay
-//   }
-// })
+const createLintingRule = () => ({
+  test: /\.(js|vue)$/,
+  loader: 'eslint-loader',
+  enforce: 'pre',
+  include: [resolve('src'), resolve('test')],
+  options: {
+    formatter: require('eslint-friendly-formatter'),
+    emitWarning: !config.dev.showEslintErrorsInOverlay
+  }
+})
 
 module.exports = {
   mode: process.env.NODE_ENV,
@@ -46,59 +43,17 @@ module.exports = {
     rules: [
       // ...(config.dev.useEslint ? [createLintingRule()] : []),
       {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: vueLoaderConfig,
-      },
-      {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [resolve('src'), resolve('test')]
       },
-      {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        type: 'asset/resource',
-        generator: {
-          filename: utils.assetsPath('img/[name].[contenthash].[ext]')
-        }
-        // loader: 'url-loader',
-        // options: {
-        //   limit: 10000,
-        //   name: utils.assetsPath('img/[name].[contenthash:7].[ext]')
-        // }
-      },
-      {
-        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-        type: 'asset/resource',
-        generator: {
-          filename: utils.assetsPath('media/[name].[contenthash].[ext]')
-        }
-        // loader: 'url-loader',
-        // options: {
-        //   limit: 10000,
-        //   name: utils.assetsPath('media/[name].[contenthash:7].[ext]')
-        // }
-      },
-      {
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        type: 'asset/resource',
-        generator: {
-          filename: utils.assetsPath('fonts/[name].[contenthash].[ext]')
-        }
-        // loader: 'url-loader',
-        // options: {
-        //   limit: 10000,
-        //   name: utils.assetsPath('fonts/[name].[contenthash:7].[ext]')
-        // }
-      }
     ]
   },
   plugins: [
-    //   new ESLintPlugin({
-    //     formatter: require('eslint-friendly-formatter'),
-    //     emitWarning: !config.dev.showEslintErrorsInOverlay
-    //   })
-    new VueLoaderPlugin(),
+      new ESLintPlugin({
+        formatter: require('eslint-friendly-formatter'),
+        emitWarning: !config.dev.showEslintErrorsInOverlay
+      })
   ],
   optimization: {
     chunkIds: "named",
@@ -106,16 +61,4 @@ module.exports = {
     mangleExports: "deterministic"
   },
   target: ['web', 'es5'],
-  // node: {
-  //   // prevent webpack from injecting useless setImmediate polyfill because Vue
-  //   // source contains it (although only uses it if it's native).
-  //   setImmediate: false,
-  //   // prevent webpack from injecting mocks to Node native modules
-  //   // that does not make sense for the client
-  //   dgram: 'empty',
-  //   fs: 'empty',
-  //   net: 'empty',
-  //   tls: 'empty',
-  //   child_process: 'empty'
-  // }
 }
