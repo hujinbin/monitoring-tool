@@ -1,6 +1,9 @@
 'use strict'
 const path = require('path')
+const utils = require('./utils')
 const config = require('../config')
+const vueLoaderConfig = require('./vue-loader.conf')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 // const ESLintPlugin = require('eslint-webpack-plugin');
 
@@ -43,6 +46,11 @@ module.exports = {
     rules: [
       // ...(config.dev.useEslint ? [createLintingRule()] : []),
       {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: vueLoaderConfig,
+      },
+      {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [resolve('src'), resolve('test')]
@@ -50,10 +58,11 @@ module.exports = {
     ]
   },
   plugins: [
-      new ESLintPlugin({
-        formatter: require('eslint-friendly-formatter'),
-        emitWarning: !config.dev.showEslintErrorsInOverlay
-      })
+    new ESLintPlugin({
+      formatter: require('eslint-friendly-formatter'),
+      emitWarning: !config.dev.showEslintErrorsInOverlay
+    }),
+    new VueLoaderPlugin(),
   ],
   optimization: {
     chunkIds: "named",
