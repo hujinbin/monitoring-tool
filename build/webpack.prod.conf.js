@@ -26,8 +26,9 @@ const webpackConfig = merge(baseWebpackConfig, {
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
     path: config.build.assetsRoot,
-    filename: utils.assetsPath('js/[name].[chunkhash].js'),
-    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
+    filename: 'monitoring-tool.min.js',
+    library: 'monitoring-tool',
+    libraryTarget: 'umd'
   },
   plugins: [
   
@@ -52,15 +53,15 @@ const webpackConfig = merge(baseWebpackConfig, {
     }),
    
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new CopyWebpackPlugin({
-      patterns:[
-        {
-          from: path.resolve(__dirname, '../static'),
-          to: config.build.assetsSubDirectory,
-          // ignore: ['.*']
-        }
-      ]
-    })
+    // new CopyWebpackPlugin({
+    //   patterns:[
+    //     {
+    //       from: path.resolve(__dirname, '../static'),
+    //       to: config.build.assetsSubDirectory,
+    //       // ignore: ['.*']
+    //     }
+    //   ]
+    // })
   ]
 })
 
