@@ -26,7 +26,7 @@ module.exports = {
   mode: process.env.NODE_ENV,
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: process.env.NODE_ENV === 'production' ? './src/index.js' : './src/main.js'
+    app: process.env.NODE_ENV === 'production' ? './src/index.js' : './main.js'
   },
   output: {
     path: config.build.assetsRoot,
