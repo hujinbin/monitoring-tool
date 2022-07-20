@@ -4,6 +4,7 @@ class monitoringTool {
     constructor(config = {}) {
         console.log(config)
         this.init();
+        this.load();
     }
     init() {
         const connection = getConnection();
@@ -32,6 +33,7 @@ class monitoringTool {
                     domContentLoadedEventEnd,
                     loadEventStart,
                 } = window.performance.timing;
+                console.log("load==============");
                 console.log(
                     fetchStart,
                     connectStart,
