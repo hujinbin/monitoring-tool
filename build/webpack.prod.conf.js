@@ -1,26 +1,14 @@
 'use strict'
-const path = require('path')
-const utils = require('./utils')
 const webpack = require('webpack')
 const config = require('../config')
 const merge = require('webpack-merge')
 const baseWebpackConfig = require('./webpack.base.conf')
-const MinCssExtractPlugin = require('mini-css-extract-plugin')
-// const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
   : require('../config/prod.env')
 
 const webpackConfig = merge(baseWebpackConfig, {
-  module: {
-    rules: utils.styleLoaders({
-      sourceMap: config.build.productionSourceMap,
-      extract: true,
-      usePostCSS: true
-    })
-  },
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
     path: config.build.assetsRoot,
@@ -29,21 +17,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     libraryTarget: 'umd'
   },
   plugins: [
-  
-    new MinCssExtractPlugin({
-      filename: utils.assetsPath('css/[name].[contenthash].css'),
-    }),
-   
     new webpack.optimize.ModuleConcatenationPlugin(),
-    // new CopyWebpackPlugin({
-    //   patterns:[
-    //     {
-    //       from: path.resolve(__dirname, '../static'),
-    //       to: config.build.assetsSubDirectory,
-    //       // ignore: ['.*']
-    //     }
-    //   ]
-    // })
   ]
 })
 

@@ -1,17 +1,11 @@
 'use strict'
-const utils = require('./utils')
 const webpack = require('webpack')
 const config = require('../config')
 const merge = require('webpack-merge')
-const path = require('path')
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const baseWebpackConfig = require('./webpack.base.conf')
-const portfinder = require('portfinder')
 
 const devWebpackConfig = merge(baseWebpackConfig, {
-  module: {
-    rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
-  },
   mode: 'development',
   stats: "errors-only",
   // cheap-module-eval-source-map is faster for development
