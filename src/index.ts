@@ -4,24 +4,22 @@ import {network} from './network/network'
 import {performance} from './performance/performance'
 
 
-// interface monitoringOption {
-//     host?: string,
-//     secret?: string,
-// }
+interface monitoringOption {
+    host?: string,
+    secret?: string,
+}
 
 class monitoringTool {
-    // public option: monitoringOption = {};
+    public option: monitoringOption = {};
     public static network = network;
     public static performance = performance;
 
-    constructor(
-        // opt?: monitoringOption
-        ) {
-        // this.option = {
-        //     host:'http://ops.ydctml.top/',
-        //     secret: '',
-        //     ...opt,
-        // }
+    constructor(opt?: monitoringOption) {
+        this.option = {
+            host:'http://ops.ydctml.top/',
+            secret: '',
+            ...opt,
+        }
         this.init();
         this.load();
     }
