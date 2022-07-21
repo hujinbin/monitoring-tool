@@ -1,8 +1,27 @@
 import { getConnection } from './utils/utils'
 
+import {network} from './network/network'
+import {performance} from './performance/performance'
+
+
+// interface monitoringOption {
+//     host?: string,
+//     secret?: string,
+// }
+
 class monitoringTool {
-    constructor(config = {}) {
-        console.log(config)
+    // public option: monitoringOption = {};
+    public static network = network;
+    public static performance = performance;
+
+    constructor(
+        // opt?: monitoringOption
+        ) {
+        // this.option = {
+        //     host:'http://ops.ydctml.top/',
+        //     secret: '',
+        //     ...opt,
+        // }
         this.init();
         this.load();
     }
@@ -32,7 +51,7 @@ class monitoringTool {
                     domContentLoadedEventStart,
                     domContentLoadedEventEnd,
                     loadEventStart,
-                } = window.performance.timing;
+                  } = window.performance.timing;
                 console.log("load==============");
                 console.log(
                     fetchStart,
@@ -47,7 +66,18 @@ class monitoringTool {
                     domContentLoadedEventEnd,
                     loadEventStart
                 )
-            })
+                const experienceTime = {
+                    connectTime: connectEnd - connectStart, //TCP连接耗时
+                    ttfbTime: responseStart - requestStart, //ttfb
+                    responseTime: responseEnd - responseStart, //Response响应耗时
+                    parseDOMTime: loadEventStart - domLoading, //DOM解析渲染耗时
+                    domContentLoadedTime:
+                      domContentLoadedEventEnd - domContentLoadedEventStart, //DOMContentLoaded事件回调耗时
+                    timeToInteractive: domInteractive - fetchStart, //首次可交互时间
+                    loadTime: loadEventStart - fetchStart, //完整的加载时间
+                }
+                console.log(experienceTime)
+            }, 5000)
 
     }
 }
