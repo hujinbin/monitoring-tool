@@ -11,8 +11,8 @@ interface monitoringOption {
 
 class monitoringTool {
     public option: monitoringOption = {};
-    public static network = network;
-    public static performance = performance;
+    public network = new network;
+    public performance : performance;
 
     constructor(opt?: monitoringOption) {
         this.option = {
@@ -20,10 +20,13 @@ class monitoringTool {
             secret: '',
             ...opt,
         }
+        this.performance = new performance;
         this.init();
-        this.load();
     }
     init() {
+        console.log("this.performance==============")
+        console.log(this.performance)
+        this.performance.onReady();
         const connection = getConnection();
         console.log(connection)
         window.addEventListener('online', (e) => this.onStateChange(e));
@@ -34,49 +37,6 @@ class monitoringTool {
     }
     onStateChange(event) {
         console.log("event===========", event)
-    }
-    load() {
-            setTimeout(() => {
-                const {
-                    fetchStart,
-                    connectStart,
-                    connectEnd,
-                    requestStart,
-                    responseStart,
-                    responseEnd,
-                    domLoading,
-                    domInteractive,
-                    domContentLoadedEventStart,
-                    domContentLoadedEventEnd,
-                    loadEventStart,
-                  } = window.performance.timing;
-                console.log("load==============");
-                console.log(
-                    fetchStart,
-                    connectStart,
-                    connectEnd,
-                    requestStart,
-                    responseStart,
-                    responseEnd,
-                    domLoading,
-                    domInteractive,
-                    domContentLoadedEventStart,
-                    domContentLoadedEventEnd,
-                    loadEventStart
-                )
-                const experienceTime = {
-                    connectTime: connectEnd - connectStart, //TCP连接耗时
-                    ttfbTime: responseStart - requestStart, //ttfb
-                    responseTime: responseEnd - responseStart, //Response响应耗时
-                    parseDOMTime: loadEventStart - domLoading, //DOM解析渲染耗时
-                    domContentLoadedTime:
-                      domContentLoadedEventEnd - domContentLoadedEventStart, //DOMContentLoaded事件回调耗时
-                    timeToInteractive: domInteractive - fetchStart, //首次可交互时间
-                    loadTime: loadEventStart - fetchStart, //完整的加载时间
-                }
-                console.log(experienceTime)
-            }, 5000)
-
     }
 }
 
