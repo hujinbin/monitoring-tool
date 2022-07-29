@@ -66,25 +66,6 @@ export function formatSeconds(time: Number) {
   return result;
 }
 
-export function getLastEvent() {
-  let lastEvent;
-  ["click", "touchstart", "mousedown", "keydown", "mouseover"].forEach(
-    (eventType) => {
-      document.addEventListener(
-        eventType,
-        (event) => {
-          lastEvent = event;
-        },
-        {
-          capture: true, // 是在捕获阶段还是冒泡阶段执行
-          passive: true, // 默认不阻止默认事件
-        }
-      );
-    }
-  );
-  return lastEvent;
-}
-
 function getSelectors(path) {
   // 反转 + 过滤 + 映射 + 拼接
   return path

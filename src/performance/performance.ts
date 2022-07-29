@@ -1,12 +1,16 @@
-import { formatSeconds,getLastEvent,getSelector } from '@/utils/utils'
+import { formatSeconds,getSelector } from '@/utils/utils'
 
 // 页面性能
 export class performance{
+    public lastEvent:any;
     constructor(){
+        this.getLastEvent();
         this.longTask();
     }
     public onReady() {
         this.pageLoad();
+        this.webMemory();
+        this.resourceLoad();
     }
     // 页面加载性能
     public pageLoad(){
@@ -74,8 +78,6 @@ export class performance{
                  
             }
             console.log(experienceTimeSting)
-            const webMMemory = window.performance.memory
-            console.log(webMMemory)
         },3000)  
     }
     // 交互长任务
@@ -86,19 +88,67 @@ export class performance{
             list.getEntries().forEach((entry) => {
                 console.log("entry=================",entry)
               if (entry.duration > 100) {
-                let lastEvent = getLastEvent();
+                let lastEvent = this.lastEvent || {};
                 console.log("lastEvent============",lastEvent)
                 const longTaskData = {
-                    eventType: lastEvent.type,
+                    eventType: lastEvent?.type,
                     startTime: entry.startTime, // 开始时间
                     duration: entry.duration, // 持续时间
                     selector: lastEvent
-                      ? getSelector(lastEvent.path || lastEvent.target)
+                      ? getSelector(lastEvent?.path || lastEvent?.target)
                       : "",
                 }
-                console.log(longTaskData)
+                console.log("longTaskData",longTaskData)
               }
             });
         }).observe({ entryTypes: ["longtask"] });
+    }
+    // 资源加载
+    public resourceLoad(){
+        const perEntries = window.performance.getEntries();
+        for (let i = 0; i < perEntries.length; i++) {
+            console.log(`
+                Name:       ${perEntries[i].name}
+                Entry Type: ${perEntries[i].entryType}
+                Start Time: ${perEntries[i].startTime}
+                Duration:   ${perEntries[i].duration}
+            `);
+        }
+    }
+    // 事件的监听
+    public getLastEvent(){
+        ["click", "touchstart", "mousedown", "keydown"].forEach(
+            (eventType) => {
+              document.addEventListener(
+                eventType,
+                (event) => {
+                  this.lastEvent = event;
+                },
+                {
+                  capture: true, // 是在捕获阶段还是冒泡阶段执行
+                  passive: true, // 默认不阻止默认事件
+                }
+              );
+            }
+        );
+    }
+    // 检测网站内存的情况
+    public webMemory(){
+       setTimeout(()=>{
+            const {
+                jsHeapSizeLimit, // 内存大小限制
+                totalJSHeapSize, // 可使用的内存
+                usedJSHeapSize, // JS 对象（包括V8引擎内部对象）占用的内存，一定小于 totalJSHeapSize
+            } = window.performance.memory;
+            if(usedJSHeapSize > totalJSHeapSize){ //内存泄漏
+              
+            }
+            console.log(`
+            jsHeapSizeLimit:       ${jsHeapSizeLimit}
+            totalJSHeapSize: ${totalJSHeapSize}
+            usedJSHeapSize: ${usedJSHeapSize}
+            `)
+            this.webMemory();
+       },5000)
     }
 }
