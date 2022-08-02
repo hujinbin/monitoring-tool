@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const config = require('../config')
 const merge = require('webpack-merge')
 const baseWebpackConfig = require('./webpack.base.conf')
+const TerserPlugin = require("terser-webpack-plugin");
 
 const env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
@@ -18,7 +19,17 @@ const webpackConfig = merge(baseWebpackConfig, {
   },
   plugins: [
     new webpack.optimize.ModuleConcatenationPlugin(),
-  ]
+  ],
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin({
+      terserOptions: {
+        compress: {
+          pure_funcs: ["console.log"]
+        }
+      }
+    })],
+  },
 })
 
 if (config.build.productionGzip) {
