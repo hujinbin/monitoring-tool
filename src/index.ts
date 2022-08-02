@@ -1,5 +1,6 @@
 import { getConnection } from './utils/utils'
 
+import {webError} from './webError/webError'
 import {network} from './network/network'
 import {performance} from './performance/performance'
 
@@ -12,15 +13,15 @@ interface monitoringOption {
 class monitoringTool {
     public option: monitoringOption = {};
     public network = new network;
-    public performance : performance;
+    public performance= new performance;
+    public webError= new webError;
 
     constructor(opt?: monitoringOption) {
         this.option = {
-            host:'http://ops.ydctml.top/',
+            host:'https://ops.ydctml.top/',
             secret: '',
             ...opt,
         }
-        this.performance = new performance;
         this.init();
     }
     init() {

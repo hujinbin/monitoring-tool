@@ -1,10 +1,9 @@
 import { formatSeconds,getSelector } from '@/utils/utils'
+import getLastEvent from "../utils/getLastEvent";
 
 // 页面性能
 export class performance{
-    public lastEvent:any;
     constructor(){
-        this.getLastEvent();
         this.longTask();
     }
     public onReady() {
@@ -28,20 +27,20 @@ export class performance{
                 domContentLoadedEventEnd,
                 loadEventStart,
               } = window.performance.timing;
-            console.log("load==============");
-            console.log(
-                fetchStart,
-                connectStart,
-                connectEnd,
-                requestStart,
-                responseStart,
-                responseEnd,
-                domLoading,
-                domInteractive,
-                domContentLoadedEventStart,
-                domContentLoadedEventEnd,
-                loadEventStart
-            )
+            // console.log("load==============");
+            // console.log(
+            //     fetchStart,
+            //     connectStart,
+            //     connectEnd,
+            //     requestStart,
+            //     responseStart,
+            //     responseEnd,
+            //     domLoading,
+            //     domInteractive,
+            //     domContentLoadedEventStart,
+            //     domContentLoadedEventEnd,
+            //     loadEventStart
+            // )
             if(domContentLoadedEventEnd === 0){
                 this.pageLoad();
             }
@@ -62,7 +61,7 @@ export class performance{
                 timeToInteractive, //首次可交互时间
                 loadTime, //完整的加载时间
             }
-            console.log(experienceTime)
+            // console.log(experienceTime)
             const experienceTimeSting= {
                 connectTime: formatSeconds(experienceTime.connectTime), //TCP连接耗时
                 ttfbTime: formatSeconds(experienceTime.ttfbTime), //ttfb
@@ -77,19 +76,19 @@ export class performance{
             if(experienceTime.loadTime > 1000){
                  
             }
-            console.log(experienceTimeSting)
+            // console.log(experienceTimeSting)
         },3000)  
     }
     // 交互长任务
     public longTask(){
-        console.log("longTask===")
+        // console.log("longTask===")
         new PerformanceObserver((list) => {
-            console.log("PerformanceObserver-list==========",list)
+            // console.log("PerformanceObserver-list==========",list)
             list.getEntries().forEach((entry) => {
-                console.log("entry=================",entry)
+                // console.log("entry=================",entry)
               if (entry.duration > 100) {
-                let lastEvent = this.lastEvent || {};
-                console.log("lastEvent============",lastEvent)
+                let lastEvent = getLastEvent() || {};
+                // console.log("lastEvent============",lastEvent)
                 const longTaskData = {
                     eventType: lastEvent?.type,
                     startTime: entry.startTime, // 开始时间
@@ -98,15 +97,31 @@ export class performance{
                       ? getSelector(lastEvent?.path || lastEvent?.target)
                       : "",
                 }
-                console.log("longTaskData",longTaskData)
+                // console.log("longTaskData",longTaskData)
               }
             });
         }).observe({ entryTypes: ["longtask"] });
     }
     // 资源加载
     public resourceLoad(){
+        console.log("resourceLoad==================")
         const perEntries = window.performance.getEntries();
+        console.log(perEntries)
         for (let i = 0; i < perEntries.length; i++) {
+            const perEntrie = perEntries[i]
+            if(perEntrie.entryType === 'resource'){ //资源加载，3秒
+                const { transferSize,duration } = perEntrie
+                console.log(transferSize)
+                const speed = transferSize / duration // 资源的下载速度 kb/s
+                console.log("speed==================")
+                console.log(speed)
+                if(speed < 1000 && duration > 500){  // 小于1M每秒 或者 时长大于500ms的
+                }
+            }else{
+                if(perEntrie.duration > 100){ // 其他渲染 100ms
+
+                }
+            }
             console.log(`
                 Name:       ${perEntries[i].name}
                 Entry Type: ${perEntries[i].entryType}
@@ -114,23 +129,6 @@ export class performance{
                 Duration:   ${perEntries[i].duration}
             `);
         }
-    }
-    // 事件的监听
-    public getLastEvent(){
-        ["click", "touchstart", "mousedown", "keydown"].forEach(
-            (eventType) => {
-              document.addEventListener(
-                eventType,
-                (event) => {
-                  this.lastEvent = event;
-                },
-                {
-                  capture: true, // 是在捕获阶段还是冒泡阶段执行
-                  passive: true, // 默认不阻止默认事件
-                }
-              );
-            }
-        );
     }
     // 检测网站内存的情况
     public webMemory(){
@@ -143,11 +141,11 @@ export class performance{
             if(usedJSHeapSize > totalJSHeapSize){ //内存泄漏
               
             }
-            console.log(`
-            jsHeapSizeLimit:       ${jsHeapSizeLimit}
-            totalJSHeapSize: ${totalJSHeapSize}
-            usedJSHeapSize: ${usedJSHeapSize}
-            `)
+            // console.log(`
+            // jsHeapSizeLimit:       ${jsHeapSizeLimit}
+            // totalJSHeapSize: ${totalJSHeapSize}
+            // usedJSHeapSize: ${usedJSHeapSize}
+            // `)
             this.webMemory();
        },5000)
     }
