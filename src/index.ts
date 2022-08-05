@@ -27,8 +27,8 @@ class monitoringTool {
     init() {
         console.log("this.performance==============")
         console.log(this.performance)
-        this.performance.onReady();
         const connection = getConnection();
+        this.performance.onReady();
         console.log(connection)
         window.addEventListener('online', (e) => this.onStateChange(e));
         window.addEventListener('offline', (e) => this.onStateChange(e));

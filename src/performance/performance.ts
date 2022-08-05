@@ -1,5 +1,5 @@
 import { formatSeconds,getSelector } from '@/utils/utils'
-import getLastEvent from "../utils/getLastEvent";
+import getLastEvent from "@/utils/getLastEvent";
 
 // 页面性能
 export class performance{

@@ -66,15 +66,14 @@ export function formatSeconds(time: Number) {
   return result;
 }
 
-function getSelectors(path) {
+function getSelectors(path:[]) {
   // 反转 + 过滤 + 映射 + 拼接
   return path
     .reverse()
-    .filter((element) => {
+    .filter((element:any) => {
       return element !== document && element !== window;
     })
-    .map((element) => {
-      console.log("element", element.nodeName);
+    .map((element:any) => {
       let selector = "";
       if (element.id) {
         return `${element.nodeName.toLowerCase()}#${element.id}`;
@@ -85,7 +84,7 @@ function getSelectors(path) {
       }
       return selector;
     })
-    .join(" ");
+    .join("->");
 }
 
 // 判断当前选择是什么节点
