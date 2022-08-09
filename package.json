@@ -13,7 +13,6 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.27.2",
     "vue": "^2.6.12"
   },
   "devDependencies": {
