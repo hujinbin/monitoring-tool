@@ -14,6 +14,7 @@ export class performance{
     // 页面加载性能
     public pageLoad(){
         setTimeout(()=>{
+            const performance = window.performance || (<any>window).msPerformance || (<any>window).webkitPerformance;
             const {
                 fetchStart,
                 connectStart,
@@ -26,7 +27,7 @@ export class performance{
                 domContentLoadedEventStart,
                 domContentLoadedEventEnd,
                 loadEventStart,
-              } = window.performance.timing;
+              } = performance.timing;
             // console.log("load==============");
             // console.log(
             //     fetchStart,
@@ -110,7 +111,7 @@ export class performance{
         for (let i = 0; i < perEntries.length; i++) {
             const perEntrie = perEntries[i]
             if(perEntrie.entryType === 'resource'){ //资源加载，3秒
-                const { transferSize,duration } = perEntrie
+                const { transferSize, duration } = perEntrie
                 console.log(transferSize)
                 const speed = transferSize / duration // 资源的下载速度 kb/s
                 console.log("speed==================")
@@ -133,11 +134,12 @@ export class performance{
     // 检测网站内存的情况
     public webMemory(){
        setTimeout(()=>{
+        const performance = window.performance || (<any>window).msPerformance || (<any>window).webkitPerformance;
             const {
                 jsHeapSizeLimit, // 内存大小限制
                 totalJSHeapSize, // 可使用的内存
                 usedJSHeapSize, // JS 对象（包括V8引擎内部对象）占用的内存，一定小于 totalJSHeapSize
-            } = window.performance.memory;
+            } = performance.memory;
             if(usedJSHeapSize > totalJSHeapSize){ //内存泄漏
               
             }
