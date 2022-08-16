@@ -1,9 +1,14 @@
 {
   "name": "monitoring-tool",
   "version": "0.0.1",
-  "description": "monitoring-tool",
+  "description": "monitoring-tool性能监控收集采集端",
   "author": "hujinbin <437044048@qq.com>",
-  "private": true,
+  "main": "lib/monitoring-tool.min.js",
+  "license": "MIT",
+  "keywords": [
+    "monitoring",
+    "monitoring-tool"
+  ],
   "scripts": {
     "dev": "webpack --config build/webpack.dev.conf.js",
     "start": "npm run dev",
