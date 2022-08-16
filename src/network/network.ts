@@ -1,3 +1,5 @@
+import { dispatchEvent } from '@/utils/utils'
+
 type RequestMethod = '' | 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH';
 
 class NetworkRequestItem {

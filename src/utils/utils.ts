@@ -100,3 +100,11 @@ export  function getSelector (pathsOrTarget:void) {
     return getSelectors(path);
   }
 }
+
+// 传递参数  
+export function dispatchEvent(data: object){
+  const moEvent = new CustomEvent('monitoring-report', {
+     detail:data,
+  });
+  window.dispatchEvent(moEvent)
+}

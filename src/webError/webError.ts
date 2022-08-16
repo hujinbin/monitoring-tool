@@ -1,4 +1,4 @@
-import { getSelector } from '@/utils/utils'
+import { getSelector,dispatchEvent } from '@/utils/utils'
 import getLastEvent from "@/utils/getLastEvent";
 
 // 页面错误信息
