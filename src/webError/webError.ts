@@ -35,6 +35,19 @@ export class webError{
                   ? getSelector(lastEvent.path || lastEvent.target)
                   : "", //CSS选择器
               })
+              dispatchEvent({
+                reportType: 'webError',
+                kind: "stability", //稳定性指标
+                type: "error", //error
+                errorType: "jsError", //jsError
+                message: event.message, //报错信息
+                filename: event.filename, //报错链接
+                position: (event.lineNo || 0) + ":" + (event.columnNo || 0), //行列号
+                stack: event.error.stack, //错误堆栈
+                selector: lastEvent
+                  ? getSelector(lastEvent.path || lastEvent.target)
+                  : "", //CSS选择器
+              })
         }
     }
     // promise异常

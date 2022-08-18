@@ -75,7 +75,10 @@ export class performance{
             }
             // 加载时间大于5秒的进行上报
             if(experienceTime.loadTime > 1000){
-                dispatchEvent(experienceTimeSting)
+                dispatchEvent({
+                    reportType: 'webStability',
+                    ...experienceTimeSting
+                })
             }
             // console.log(experienceTimeSting)
         },3000)  
@@ -98,7 +101,10 @@ export class performance{
                       ? getSelector(lastEvent?.path || lastEvent?.target)
                       : "",
                 }
-                dispatchEvent(longTaskData)
+                dispatchEvent({
+                    reportType: 'webStability',
+                    ...longTaskData,
+                })
                 // console.log("longTaskData",longTaskData)
               }
             });
@@ -118,11 +124,14 @@ export class performance{
                 console.log("speed==================")
                 console.log(speed)
                 if(speed < 1000 && duration > 500){  // 小于1M每秒 或者 时长大于500ms的
-                    dispatchEvent(perEntrie)
+                    dispatchEvent({
+reportType: 'webStability',
+                    ...perEntrie
+                })
                 }
             }else{
                 if(perEntrie.duration > 100){ // 其他渲染 100ms
-                    dispatchEvent(perEntrie)
+                    dispatchEvent({reportType: 'webStability',...perEntrie})
                 }
             }
             console.log(`
@@ -143,7 +152,7 @@ export class performance{
                 usedJSHeapSize, // JS 对象（包括V8引擎内部对象）占用的内存，一定小于 totalJSHeapSize
             } = performance.memory;
             if(usedJSHeapSize > totalJSHeapSize){ //内存泄漏
-                dispatchEvent(performance.memory)
+                dispatchEvent({reportType: 'webStability',...performance.memory})
             }
             // console.log(`
             // jsHeapSizeLimit:       ${jsHeapSizeLimit}
