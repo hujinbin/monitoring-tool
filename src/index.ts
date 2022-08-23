@@ -46,12 +46,15 @@ class monitoringTool {
     private onStateChange(event:any) {
         console.log("event===========", event)
     }
+    // 信息上报
     private onReport(event:any){
         console.log("onReport.event====================")
-        console.log(event)
+        const {hostname,href} = window.location
         let data = {
             ...event.detail,
-            secret: this.option.secret
+            apiKey: this.option.secret,
+            domain: hostname,
+            path: href,
         }
         this.report.send(data)
     }

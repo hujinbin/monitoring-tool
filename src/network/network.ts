@@ -3,24 +3,24 @@ import { dispatchEvent } from '@/utils/utils'
 type RequestMethod = '' | 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH';
 
 class NetworkRequestItem {
-  id: string                 = '';
-  name?: string              = '';
+  id: string = '';
+  name?: string = '';
   method: RequestMethod = '';
-  url: string                = '';
-  status: number | string    = 0;
-  statusText?: string        = '';
+  url: string = '';
+  status: number | string = 0;
+  statusText?: string = '';
   readyState?: XMLHttpRequest['readyState'] = 0;
   header: { [key: string]: string } = null; // response header
   responseType: XMLHttpRequest['responseType'] = '';
   requestType: 'xhr' | 'fetch' | 'ping' | 'custom';
   requestHeader: HeadersInit = null;
   response: any;
-  startTime: number         = 0;
-  endTime: number           = 0;
-  costTime?: number         = 0;
+  startTime: number = 0;
+  endTime: number = 0;
+  costTime?: number = 0;
   getData: { [key: string]: string } = null;
   postData: { [key: string]: string } | string = null;
-  actived: boolean          = false;
+  actived: boolean = false;
 
   constructor() {
     this.id = Math.random().toString(36).substring(2, 8);
@@ -49,18 +49,18 @@ export class network {
 
     const that = this;
     const _open = window.XMLHttpRequest.prototype.open,
-          _send = window.XMLHttpRequest.prototype.send
+      _send = window.XMLHttpRequest.prototype.send
     that._xhrOpen = _open;
     that._xhrSend = _send;
 
     // mock open()
-    window.XMLHttpRequest.prototype.open = function() {
+    window.XMLHttpRequest.prototype.open = function () {
       const XMLReq: XMLHttpRequest = this;
       const args = [].slice.call(arguments),
-            method = args[0],
-            url = args[1];
+        method = args[0],
+        url = args[1];
       const item = new NetworkRequestItem();
-      let timer:any = null;
+      let timer: any = null;
 
       // may be used by other functions
       (<any>XMLReq)._requestID = item.id;
@@ -69,9 +69,9 @@ export class network {
 
       return _open.apply(XMLReq, args);
     };
-    let start:number;
+    let start: number;
     // mock send()
-    window.XMLHttpRequest.prototype.send = function() {
+    window.XMLHttpRequest.prototype.send = function () {
       const XMLReq: XMLHttpRequest = this;
       const args = [].slice.call(arguments)
       const { _url, _method } = <any>XMLReq;
@@ -80,18 +80,37 @@ export class network {
       item.method = _method ? _method.toUpperCase() : 'GET';
       item.url = _url || '';
       item.name = item.url.replace(new RegExp('[/]*$'), '').split('/').pop() || '';
-      let handler = (type:string) => (event:any) => {
+      let handler = (type: string) => (event: any) => {
         let duration = Date.now() - start;
         let status = this.status;
         let statusText = this.statusText;
-        if(type === 'error' || duration> 2000){ // 接口报错和响应2秒以上
-          
+        if (type === 'error') { // 接口报错和响应2秒以上
+          dispatchEvent({
+            reportType: 'networkError',
+            type: "xhr", //xhr
+            eventType: type, //load error abort
+            pathname: _url, //接口的url地址
+            status: status + "-" + statusText,
+            duration: duration, //接口耗时
+            response: this.response ? JSON.stringify(this.response) : "",
+          })
+        }else if(duration > 2000){
+          dispatchEvent({
+            reportType: 'networkStability',
+            kind: "stability", //稳定性指标
+            type: "xhr", //xhr
+            eventType: type, //load error abort
+            pathname: _url, //接口的url地址
+            status: status + "-" + statusText,
+            duration: duration, //接口耗时
+            response: this.response ? JSON.stringify(this.response) : "",
+          })
         }
         console.log({
           kind: "stability", //稳定性指标
           type: "xhr", //xhr
           eventType: type, //load error abort
-          pathname: this._url, //接口的url地址
+          pathname: _url, //接口的url地址
           status: status + "-" + statusText,
           duration: duration, //接口耗时
           response: this.response ? JSON.stringify(this.response) : "",
@@ -108,14 +127,14 @@ export class network {
     if (!_fetch) { return; }
     const that = this;
     this._fetch = _fetch;
-    let start:number;
-    
+    let start: number;
+
     (<any>window).fetch = (input: RequestInfo, init?: RequestInit) => {
       start = Date.now();
       const item = new NetworkRequestItem();
       let url: URL,
-          method = 'GET',
-          requestHeader: HeadersInit = null;
+        method = 'GET',
+        requestHeader: HeadersInit = null;
       let _fetchReponse: Response;
 
       // handle `input` content
@@ -186,14 +205,26 @@ export class network {
         }
       }).then((responseBody) => {
         let duration = Date.now() - start;
-        if(duration> 2000){
-
+        if (duration > 2000) {
+          dispatchEvent({
+            reportType: 'networkStability',
+            duration: duration, //接口耗时
+            url,
+          })
         }
         console.log(responseBody)
         return _fetchReponse;
       }).catch((e) => {
         // mock finally
         let duration = Date.now() - start;
+        dispatchEvent({
+          reportType: 'networkError',
+          kind: "stability", //稳定性指标
+          type: "xhr", //xhr
+          eventType: 'error', //load error abort
+          pathname: request, //接口的url地址
+          duration: duration, //接口耗时
+        })
         console.log(e)
         console.log({
           kind: "stability", //稳定性指标
