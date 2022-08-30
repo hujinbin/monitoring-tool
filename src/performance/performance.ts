@@ -1,4 +1,4 @@
-import { formatSeconds, getSelector, dispatchEvent } from '@/utils/utils'
+import { getSelector, dispatchEvent } from '@/utils/utils'
 import getLastEvent from "@/utils/getLastEvent";
 
 // 页面性能
@@ -62,25 +62,13 @@ export class performance {
                 timeToInteractive, //首次可交互时间
                 loadTime, //完整的加载时间
             }
-            // console.log(experienceTime)
-            const experienceTimeSting = {
-                connectTime: formatSeconds(experienceTime.connectTime), //TCP连接耗时
-                ttfbTime: formatSeconds(experienceTime.ttfbTime), //ttfb
-                responseTime: formatSeconds(experienceTime.responseTime), //Response响应耗时
-                parseDOMTime: formatSeconds(experienceTime.parseDOMTime), //DOM解析渲染耗时
-                domContentLoadedTime:
-                    formatSeconds(experienceTime.domContentLoadedTime), //DOMContentLoaded事件回调耗时
-                timeToInteractive: formatSeconds(experienceTime.timeToInteractive), //首次可交互时间
-                loadTime: formatSeconds(experienceTime.loadTime), //完整的加载时间
-            }
             // 加载时间大于5秒的进行上报
             if (experienceTime.loadTime > 1000) {
                 dispatchEvent({
                     reportType: 'webStability',
-                    ...experienceTimeSting
+                    ...experienceTime
                 })
             }
-            // console.log(experienceTimeSting)
         }, 3000)
     }
     // 交互长任务

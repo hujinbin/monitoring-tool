@@ -1,19 +1,26 @@
 import TaskQueue from './taskQueue'
 
 // 上报机制
-export class report extends TaskQueue{
-    private host: string = ''
-    constructor(host: string){
-        super();
-        this.host = host;
-    }
-   public send(data: any){
+export class report extends TaskQueue {
+   private host: string = ''
+   constructor(host: string) {
+      super();
+      this.host = host;
+   }
+   public send(data: any) {
       this.request(() => this.sendData(data))
    }
-//    单个请求方法
-   private sendData(data: any){
-      const blob = new Blob([JSON.stringify(data)]);
-      console.log(blob)
-      window.navigator.sendBeacon(`${this.host}/api/report`, blob);
+   //    单个请求方法
+   private sendData(data: any) {
+      const formData = new FormData();
+      Object.keys(data).forEach((key) => {
+         let value = data[key];
+         if (typeof value !== "string") {
+            // formData只能append string 或 Blob
+            value = JSON.stringify(value);
+         }
+         formData.append(key, value);
+      });
+      window.navigator.sendBeacon(`${this.host}/api/report`, formData);
    }
 }

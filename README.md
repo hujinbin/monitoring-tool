@@ -9,7 +9,7 @@
 #### 方法一：使用 npm（推荐）
 
 ```bash
-$ npm install vconsole
+$ npm install monitoring-tool
 ```
 
 Import 并初始化后，即可使用。
