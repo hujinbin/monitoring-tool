@@ -17,6 +17,7 @@ class monitoringTool {
     public performance:any= null;
     public webError:any = null;
     public report:any = null;
+    private effectiveType:string = ''
 
     constructor(opt?: monitoringOption) {
         this.option = {
@@ -38,25 +39,26 @@ class monitoringTool {
         const connection = getConnection();
         this.performance.onReady();
         console.log(connection)
-        window.addEventListener('online', (e) => this.onStateChange(e));
-        window.addEventListener('offline', (e) => this.onStateChange(e));
+        this.effectiveType = connection.effectiveType;
         connection.addEventListener('change', (event:any) => this.onStateChange(event));
         window.addEventListener('monitoring-report', (event) => { this.onReport(event) });
     }
     private onStateChange(event:any) {
-        console.log("event===========", event)
+        this.effectiveType = event.target.effectiveType
     }
     // 信息上报
     private onReport(event:any){
         console.log("onReport.event====================")
-        const {hostname,href} = window.location
-        let data = {
-            ...event.detail,
-            apiKey: this.option.secret,
-            domain: hostname,
-            path: href,
+        if(this.effectiveType === '4g'){  // 限流模式下不上报
+            const {hostname,href} = window.location
+            let data = {
+                ...event.detail,
+                apiKey: this.option.secret,
+                domain: hostname,
+                path: href,
+            }
+            this.report.send(data)
         }
-        this.report.send(data)
     }
 
 }

@@ -16,5 +16,5 @@ let lastEvent:any;
 );
 
 export default function () {
-  return lastEvent;
+  return lastEvent || '';
 }

@@ -73,14 +73,14 @@ export class performance {
     }
     // 交互长任务
     public longTask() {
-        // console.log("longTask===")
+        console.log("longTask===")
         new PerformanceObserver((list) => {
             // console.log("PerformanceObserver-list==========",list)
             list.getEntries().forEach((entry) => {
                 // console.log("entry=================",entry)
                 if (entry.duration > 100) {
                     let lastEvent = getLastEvent() || {};
-                    // console.log("lastEvent============",lastEvent)
+                    console.log("lastEvent============",lastEvent)
                     const longTaskData = {
                         eventType: lastEvent?.type,
                         startTime: entry.startTime, // 开始时间
@@ -93,7 +93,7 @@ export class performance {
                         reportType: 'webStability',
                         ...longTaskData,
                     })
-                    // console.log("longTaskData",longTaskData)
+                    console.log("longTaskData",longTaskData)
                 }
             });
         }).observe({ entryTypes: ["longtask"] });
