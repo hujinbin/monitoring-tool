@@ -1,25 +1,26 @@
 import { dispatchEvent } from '@/utils/utils'
 
-type RequestMethod = '' | 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH';
+type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH';
+type RequestType = 'xhr' | 'fetch' | 'ping' | 'custom';
 
 class NetworkRequestItem {
   id: string = '';
   name?: string = '';
-  method: RequestMethod = '';
+  method: RequestMethod | string = '';
   url: string = '';
   status: number | string = 0;
   statusText?: string = '';
   readyState?: XMLHttpRequest['readyState'] = 0;
-  header: { [key: string]: string } = null; // response header
+  header: { [key: string]: string } = {'' : ''}; // response header
   responseType: XMLHttpRequest['responseType'] = '';
-  requestType: 'xhr' | 'fetch' | 'ping' | 'custom';
-  requestHeader: HeadersInit = null;
+  requestType: RequestType | string = '';
+  requestHeader: HeadersInit | null = null;
   response: any;
   startTime: number = 0;
   endTime: number = 0;
   costTime?: number = 0;
-  getData: { [key: string]: string } = null;
-  postData: { [key: string]: string } | string = null;
+  getData: { [key: string]: string } | null = null;
+  postData: { [key: string]: string } | null = null;
   actived: boolean = false;
 
   constructor() {
@@ -32,10 +33,10 @@ export class network {
   public maxNetworkNumber: number = 1000;
   protected itemCounter: number = 0;
 
-  private _xhrOpen: XMLHttpRequest['open'] = undefined; // the origin function
-  private _xhrSend: XMLHttpRequest['send'] = undefined;
-  private _xhrSetRequestHeader: XMLHttpRequest['setRequestHeader'] = undefined;
-  private _fetch: WindowOrWorkerGlobalScope['fetch'] = undefined;
+  private _xhrOpen: XMLHttpRequest['open'] | undefined = undefined; // the origin function
+  private _xhrSend: XMLHttpRequest['send'] | undefined = undefined;
+  private _xhrSetRequestHeader: XMLHttpRequest['setRequestHeader'] | undefined = undefined;
+  private _fetch: WindowOrWorkerGlobalScope['fetch'] | undefined = undefined;
 
   constructor() {
     this.mockXHR();
@@ -56,7 +57,7 @@ export class network {
     // mock open()
     window.XMLHttpRequest.prototype.open = function () {
       const XMLReq: XMLHttpRequest = this;
-      const args = [].slice.call(arguments),
+      const args: any = [].slice.call(arguments),
         method = args[0],
         url = args[1];
       const item = new NetworkRequestItem();
@@ -73,7 +74,7 @@ export class network {
     // mock send()
     window.XMLHttpRequest.prototype.send = function () {
       const XMLReq: XMLHttpRequest = this;
-      const args = [].slice.call(arguments)
+      const args: any = [].slice.call(arguments)
       const { _url, _method } = <any>XMLReq;
       start = Date.now();
       const item = new NetworkRequestItem();
@@ -135,7 +136,7 @@ export class network {
       const item = new NetworkRequestItem();
       let url: URL,
         method = 'GET',
-        requestHeader: HeadersInit = null;
+        requestHeader: HeadersInit | null = null;
       let _fetchReponse: Response;
 
       // handle `input` content
