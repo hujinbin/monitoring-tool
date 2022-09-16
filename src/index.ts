@@ -7,16 +7,16 @@ import {report} from './report/report'
 
 
 interface monitoringOption {
-    host?: string,
+    host: string,
     secret?: string,
 }
 
 class monitoringTool {
-    public option: monitoringOption = {};
+    public option: monitoringOption = { host: '' };
     public network:any = null;
     public performance:any= null;
     public webError:any = null;
-    public report:any = null;
+    public report: any = null;
     private effectiveType:string = ''
 
     constructor(opt?: monitoringOption) {
@@ -26,9 +26,9 @@ class monitoringTool {
             ...opt,
         }
         if(opt?.secret){
-            this.network = new network;
-            this.performance = new performance;
-            this.webError = new webError;
+            this.network = new network();
+            this.performance = new performance();
+            this.webError = new webError();
             this.init();
             this.report = new report(this.option.host)
         }
@@ -36,7 +36,7 @@ class monitoringTool {
     private init() {
         console.log("this.performance==============")
         console.log(this.performance)
-        const connection = getConnection();
+        const connection: any = getConnection();
         this.performance.onReady();
         console.log(connection)
         this.effectiveType = connection.effectiveType;

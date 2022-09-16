@@ -2,7 +2,7 @@ import TaskQueue from './taskQueue'
 
 // 上报机制
 export class report extends TaskQueue {
-   private host: string = ''
+   host: string = ''
    constructor(host: string) {
       super();
       this.host = host;
