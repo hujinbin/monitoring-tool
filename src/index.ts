@@ -7,12 +7,12 @@ import {report} from './report/report'
 
 
 interface monitoringOption {
-    host: string,
+    host?: string,
     secret?: string,
 }
 
 class monitoringTool {
-    public option: monitoringOption = { host: '' };
+    public option: monitoringOption = {};
     public network:any = null;
     public performance:any= null;
     public webError:any = null;

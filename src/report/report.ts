@@ -3,9 +3,11 @@ import TaskQueue from './taskQueue'
 // 上报机制
 export class report extends TaskQueue {
    host: string = ''
-   constructor(host: string) {
+   constructor(host?: string) {
       super();
-      this.host = host;
+      if (host) {
+          this.host = host;
+      }
    }
    public send(data: any) {
       this.request(() => this.sendData(data))
