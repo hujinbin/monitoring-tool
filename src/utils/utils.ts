@@ -1,5 +1,5 @@
 export function getConnection() {
-  const nav = window.navigator;
+  const nav: any = window.navigator;
   if (!nav) return null;
   return nav.connection || nav.mozConnection || nav.webkitConnection;
 };
@@ -29,7 +29,7 @@ export function getNetworkState() {
   return state;
 };
 
-function getSelectors(path:[]) {
+function getSelectors(path: Array<{ parentNode: any }>) {
   // 反转 + 过滤 + 映射 + 拼接
   return path
     .reverse()
@@ -51,11 +51,11 @@ function getSelectors(path:[]) {
 }
 
 // 判断当前选择是什么节点
-export  function getSelector (pathsOrTarget:void) {
+export  function getSelector (pathsOrTarget: any) {
   if (Array.isArray(pathsOrTarget)) {
     return getSelectors(pathsOrTarget);
   } else {
-    let path = [];
+    let path: Array<{ parentNode: any }>  = [];
     while (pathsOrTarget) {
       path.push(pathsOrTarget);
       pathsOrTarget = pathsOrTarget.parentNode;
@@ -64,7 +64,7 @@ export  function getSelector (pathsOrTarget:void) {
   }
 }
 
-// 传递参数  
+// 传递参数
 export function dispatchEvent(data: object){
   const moEvent = new CustomEvent('monitoring-report', {
      detail:data,

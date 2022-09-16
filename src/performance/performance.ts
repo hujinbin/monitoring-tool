@@ -103,7 +103,7 @@ export class performance {
     // 资源加载
     public resourceLoad() {
         console.log("resourceLoad==================")
-        const perEntries = window.performance.getEntries();
+        const perEntries: any = window.performance.getEntries();
         console.log(perEntries)
         for (let i = 0; i < perEntries.length; i++) {
             const perEntrie = perEntries[i]
@@ -136,7 +136,7 @@ export class performance {
     // 检测网站内存的情况
     public webMemory() {
         setTimeout(() => {
-            const performance = window.performance || (<any>window).msPerformance || (<any>window).webkitPerformance;
+            const performance: any = window.performance || (<any>window).msPerformance || (<any>window).webkitPerformance;
             const {
                 jsHeapSizeLimit, // 内存大小限制
                 totalJSHeapSize, // 可使用的内存
