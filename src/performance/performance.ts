@@ -82,9 +82,10 @@ export class performance {
                 if (entry.duration > 100) {
                     let lastEvent = getLastEvent() || {};
                     console.log("lastEvent============",lastEvent)
+                    const startTime = Math.floor(entry.startTime)
                     const longTaskData = {
                         eventType: lastEvent?.type,
-                        startTime: entry.startTime, // 开始时间
+                        startTime, // 开始时间
                         duration: entry.duration, // 持续时间
                         selector: lastEvent
                             ? getSelector(lastEvent?.path || lastEvent?.target)
@@ -117,12 +118,12 @@ export class performance {
                     dispatchEvent({
                         reportType: 'webStability',
                         kind:'resource',
-                        ...perEntrie
+                        ...perEntrie[i]
                     })
                 }
             } else {
                 if (perEntrie.duration > 100) { // 其他渲染 100ms
-                    dispatchEvent({ reportType: 'webStability', kind:'draw', ...perEntrie })
+                    dispatchEvent({ reportType: 'webStability', kind:'draw', ...perEntrie[i] })
                 }
             }
             console.log(`
