@@ -94,7 +94,6 @@ export class network {
             status: status,
             statusText: statusText,
             duration: duration, //接口耗时
-            response: this.response ? JSON.stringify(this.response) : "",
           })
         }else if(duration > 2000){
           dispatchEvent({
@@ -103,20 +102,12 @@ export class network {
             type: "xhr", //xhr
             eventType: type, //load error abort
             pathname: _url, //接口的url地址
-            status: status + "-" + statusText,
+            status: status,
+            statusText: statusText,
             duration: duration, //接口耗时
             // response: this.response ? JSON.stringify(this.response) : "",
           })
         }
-        console.log({
-          kind: "stability", //稳定性指标
-          type: "xhr", //xhr
-          eventType: type, //load error abort
-          pathname: _url, //接口的url地址
-          status: status + "-" + statusText,
-          duration: duration, //接口耗时
-          response: this.response ? JSON.stringify(this.response) : "",
-        });
       };
       this.addEventListener("load", handler("load"), false);
       this.addEventListener("error", handler("error"), false);
@@ -214,7 +205,7 @@ export class network {
             type: "fetch", //fetch
             duration: duration, //接口耗时
             pathname: request,
-            status:item.status,
+            status: item.status,
             statusText:item.statusText,
             url,
           })

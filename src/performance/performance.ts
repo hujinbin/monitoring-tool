@@ -118,14 +118,24 @@ export class performance {
                     dispatchEvent({
                         reportType: 'webStability',
                         kind:'resource',
-                        ...perEntrie[i]
+                        name: perEntrie.name,
+                        entryType: perEntrie.entryType,
+                        duration: Math.floor(perEntrie.duration),
+                        startTime: Math.floor(perEntrie.startTime),
                     })
                 }
             } else {
                 if (perEntrie.duration > 100) { // 其他渲染 100ms
-                    dispatchEvent({ reportType: 'webStability', kind:'draw', ...perEntrie[i] })
+                    dispatchEvent({ 
+                        reportType: 'webStability', 
+                        kind:'draw', 
+                        ...perEntrie,
+                        startTime: Math.floor(perEntrie.startTime) 
+                    })
                 }
             }
+            console.log("perEntries[i]==================")
+            console.log(perEntries[i])
             console.log(`
                 Name:       ${perEntries[i].name}
                 Entry Type: ${perEntries[i].entryType}
