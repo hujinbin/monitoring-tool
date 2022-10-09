@@ -4,11 +4,30 @@ import getLastEvent from "@/utils/getLastEvent";
 // 页面错误信息
 export class webError{
     constructor(){
-        window.addEventListener("error",(event)=>this.getJsError(event));
+      console.log("error =========== webError:")
+      // window.onerror = function(msg, url, row, col, error) {
+      //   console.log({
+      //     type: 'javascript',
+      //     row: row,
+      //     col: col,
+      //     msg: error && error.stack? error.stack : msg,
+      //     url: url,
+      //     time: new Date().getTime(), // 错误发生的时间
+      //   }) 
+      // }
+    
+        // window.onerror = (event)=> this.getJsError(event)
+        window.addEventListener(
+          "error",
+          function (event) {
+            console.log("getJsError====================",event)
+          })
+        // window.addEventListener("error",(event)=>this.getJsError(event));
         window.addEventListener("unhandledrejection",(event)=>this.getPromiseError(event));
     }
     // js报错
     public getJsError(event:any){
+      console.log("getJsError====================",event)
         let lastEvent = getLastEvent();
         // 有 e.target.src(href) 的认定为资源加载错误
         if (event.target && (event.target.src || event.target.href)) {
@@ -87,6 +106,19 @@ export class webError{
             selector: lastEvent
               ? getSelector(lastEvent.path || lastEvent.target)
               : "",
+        })
+        dispatchEvent({
+          reportType: 'webError',
+          kind: "stability", //稳定性指标
+          type: "error", //error
+          errorType: "PromiseError", //jsError
+          message: event.message, //报错信息
+          filename: event.filename, //报错链接
+          position: (event.lineNo || 0) + ":" + (event.columnNo || 0), //行列号
+          stack: event.error.stack, //错误堆栈
+          selector: lastEvent
+            ? getSelector(lastEvent.path || lastEvent.target)
+            : "", //CSS选择器
         })
     }
 }

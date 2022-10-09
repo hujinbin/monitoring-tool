@@ -85,9 +85,11 @@ export class network {
         let duration = Date.now() - start;
         let status = this.status;
         let statusText = this.statusText;
-        if (type === 'error') { // 接口报错和响应2秒以上
+        console.log("type======================",type)
+        if (status !== 200) { // 接口报错和响应2秒以上
           dispatchEvent({
             reportType: 'networkError',
+            kind: "networkError", //稳定性指标
             type: "xhr", //xhr
             eventType: type, //load error abort
             pathname: _url, //接口的url地址
