@@ -63,7 +63,7 @@ export class performance {
                 loadTime, //完整的加载时间
             }
             // 加载时间大于5秒的进行上报
-            if (experienceTime.loadTime > 1000) {
+            if (experienceTime.loadTime > 5000) {
                 dispatchEvent({
                     reportType: 'webStability',
                     kind:'pageload',

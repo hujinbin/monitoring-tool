@@ -5,24 +5,24 @@ import getLastEvent from "@/utils/getLastEvent";
 export class webError{
     constructor(){
       console.log("error =========== webError:")
-      // window.onerror = function(msg, url, row, col, error) {
-      //   console.log({
-      //     type: 'javascript',
-      //     row: row,
-      //     col: col,
-      //     msg: error && error.stack? error.stack : msg,
-      //     url: url,
-      //     time: new Date().getTime(), // 错误发生的时间
-      //   }) 
-      // }
-    
-        // window.onerror = (event)=> this.getJsError(event)
+      window.onerror = function(msg, url, row, col, error) {
+        console.warn("getJsError , error ====================")
+        console.warn({
+          type: 'javascript',
+          row: row,
+          col: col,
+          msg: error && error.stack? error.stack : msg,
+          url: url,
+          time: new Date().getTime(), // 错误发生的时间
+        }) 
+      }
         window.addEventListener(
           "error",
           function (event) {
-            console.log("getJsError====================",event)
+            console.warn("getJsError====================",event)
           })
-        // window.addEventListener("error",(event)=>this.getJsError(event));
+          // window.onerror = (event)=> this.getJsError(event)
+        window.addEventListener("error",(event)=>this.getJsError(event));
         window.addEventListener("unhandledrejection",(event)=>this.getPromiseError(event));
     }
     // js报错

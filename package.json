@@ -1,6 +1,6 @@
 {
   "name": "monitoring-tool",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "monitoring-tool性能监控收集采集端",
   "author": "hujinbin <437044048@qq.com>",
   "main": "lib/monitoring-tool.min.js",
