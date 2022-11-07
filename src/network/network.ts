@@ -95,6 +95,7 @@ export class network {
             pathname: _url, //接口的url地址
             status: status,
             statusText: statusText,
+            method:item.method,
             duration: duration, //接口耗时
           })
         }else if(duration > 2000){
@@ -106,6 +107,7 @@ export class network {
             pathname: _url, //接口的url地址
             status: status,
             statusText: statusText,
+            method:item.method,
             duration: duration, //接口耗时
             // response: this.response ? JSON.stringify(this.response) : "",
           })
@@ -209,6 +211,7 @@ export class network {
             pathname: request,
             status: item.status,
             statusText:item.statusText,
+            method:item.method,
             url,
           })
         }
@@ -225,6 +228,7 @@ export class network {
           pathname: request, //接口的url地址
           status:item.status,
           statusText:item.statusText,
+          method:item.method,
           duration: duration, //接口耗时
         })
         console.log(e)
