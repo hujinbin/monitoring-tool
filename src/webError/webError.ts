@@ -49,7 +49,7 @@ export class webError{
                 message: event.message, //报错信息
                 filename: event.filename, //报错链接
                 position: (event.lineNo || 0) + ":" + (event.columnNo || 0), //行列号
-                stack: event.error.stack, //错误堆栈
+                stack: event && event.error && event.error.stack, //错误堆栈
                 selector: lastEvent
                   ? getSelector(lastEvent.path || lastEvent.target)
                   : "", //CSS选择器
@@ -62,7 +62,7 @@ export class webError{
                 message: event.message, //报错信息
                 filename: event.filename, //报错链接
                 position: (event.lineNo || 0) + ":" + (event.columnNo || 0), //行列号
-                stack: event.error.stack, //错误堆栈
+                stack: event && event.error && event.error.stack, //错误堆栈
                 selector: lastEvent
                   ? getSelector(lastEvent.path || lastEvent.target)
                   : "", //CSS选择器
@@ -94,6 +94,7 @@ export class webError{
             stack = reason.stack;
           }
         }
+        console.log('PromiseError')
         console.log({
             //未捕获的promise错误
             kind: "stability", //稳定性指标
@@ -115,7 +116,7 @@ export class webError{
           message: event.message, //报错信息
           filename: event.filename, //报错链接
           position: (event.lineNo || 0) + ":" + (event.columnNo || 0), //行列号
-          stack: event.error.stack, //错误堆栈
+          stack: event && event.error && event.error.stack, //错误堆栈
           selector: lastEvent
             ? getSelector(lastEvent.path || lastEvent.target)
             : "", //CSS选择器
