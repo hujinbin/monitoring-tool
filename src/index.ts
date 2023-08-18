@@ -21,7 +21,7 @@ class monitoringTool {
 
     constructor(opt?: monitoringOption) {
         this.option = {
-            host:'https://card.leheavengame.com',
+            host:'https://monitor.leheavengame.com',
             secret: '',
             ...opt,
         }
