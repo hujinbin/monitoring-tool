@@ -63,12 +63,10 @@ class monitoringTool {
 
 }
 
-interface Window {
-  monitoringTool(options: any): void;
-}
+
 /* 支持使用标签的方式引入 */
 if (typeof window !== 'undefined') {
-   Window.monitoringTool = monitoringTool
+    (window as any).monitoringTool = monitoringTool;
 }
 
 export default monitoringTool;
