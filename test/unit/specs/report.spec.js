@@ -3,6 +3,16 @@
  */
 import { report } from '@/report/report';
 
+// Helper function to read blob content
+const readBlobAsText = (blob) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsText(blob);
+  });
+};
+
 describe('report', () => {
   let reportInstance;
   let sendBeaconSpy;
@@ -107,7 +117,7 @@ describe('report', () => {
       expect(callArgs[1]).toBeInstanceOf(Blob);
       
       // Read blob content to verify
-      const blobText = await callArgs[1].text();
+      const blobText = await readBlobAsText(callArgs[1]);
       expect(JSON.parse(blobText)).toEqual(testData);
     });
 
@@ -130,7 +140,7 @@ describe('report', () => {
       await new Promise(resolve => setTimeout(resolve, 50));
       
       const callArgs = sendBeaconSpy.mock.calls[0];
-      const blobText = await callArgs[1].text();
+      const blobText = await readBlobAsText(callArgs[1]);
       expect(JSON.parse(blobText)).toEqual(complexData);
     });
 
@@ -214,7 +224,7 @@ describe('report', () => {
       await new Promise(resolve => setTimeout(resolve, 50));
       
       const callArgs = sendBeaconSpy.mock.calls[0];
-      const blobText = await callArgs[1].text();
+      const blobText = await readBlobAsText(callArgs[1]);
       const parsed = JSON.parse(blobText);
       expect(parsed.error).toBeNull();
     });

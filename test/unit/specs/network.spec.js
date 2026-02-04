@@ -125,8 +125,17 @@ describe('network', () => {
   });
 
   describe('mockFetch', () => {
+    beforeEach(() => {
+      // Setup fetch mock before each test
+      global.fetch = jest.fn(() => Promise.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({ data: 'test' })
+      }));
+    });
+
     it('should mock fetch method', () => {
-      expect(typeof window.fetch).toBe('function');
+      expect(typeof global.fetch).toBe('function');
     });
 
     it('should preserve original fetch behavior', async () => {
@@ -137,7 +146,7 @@ describe('network', () => {
         json: async () => ({ data: 'test' })
       };
       
-      window.fetch = jest.fn(() => Promise.resolve(mockResponse));
+      global.fetch = jest.fn(() => Promise.resolve(mockResponse));
       
       const response = await fetch('https://api.example.com/data');
       

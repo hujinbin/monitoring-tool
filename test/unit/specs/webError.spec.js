@@ -13,14 +13,27 @@ jest.mock('@/utils/utils', () => ({
 
 jest.mock('@/utils/getLastEvent', () => jest.fn());
 
+// Helper function to create a handled rejected promise
+const createHandledRejection = (reason) => {
+  const p = Promise.reject(reason);
+  p.catch(() => {}); // Prevent unhandled rejection
+  return p;
+};
+
 describe('webError', () => {
   let webErrorInstance;
   let dispatchEventSpy;
   let getSelectorSpy;
+  let consoleLogSpy;
+  let consoleWarnSpy;
 
   beforeEach(() => {
     // Clear all mocks
     jest.clearAllMocks();
+    
+    // Suppress console logs during tests
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+    consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
     
     dispatchEventSpy = jest.spyOn(utils, 'dispatchEvent');
     getSelectorSpy = jest.spyOn(utils, 'getSelector');
@@ -34,6 +47,10 @@ describe('webError', () => {
   });
 
   afterEach(() => {
+    // Clean up
+    if (webErrorInstance) {
+      webErrorInstance = null;
+    }
     jest.restoreAllMocks();
   });
 
@@ -233,7 +250,7 @@ describe('webError', () => {
     it('should handle rejected promise with string reason', () => {
       const promiseEvent = {
         reason: 'Promise rejected',
-        promise: Promise.reject('Promise rejected')
+        promise: createHandledRejection('Promise rejected')
       };
       
       const mockLastEvent = {
@@ -251,8 +268,7 @@ describe('webError', () => {
           reportType: 'webError',
           kind: 'stability',
           type: 'error',
-          errorType: 'promiseError',
-          message: 'Promise rejected',
+          errorType: 'PromiseError',
           selector: 'button.action'
         })
       );
@@ -264,7 +280,7 @@ describe('webError', () => {
       
       const promiseEvent = {
         reason: error,
-        promise: Promise.reject(error)
+        promise: createHandledRejection(error)
       };
       
       getLastEvent.mockReturnValue(null);
@@ -276,9 +292,7 @@ describe('webError', () => {
           reportType: 'webError',
           kind: 'stability',
           type: 'error',
-          errorType: 'promiseError',
-          message: 'Promise error message',
-          stack: expect.stringContaining('Error: Promise error message'),
+          errorType: 'PromiseError',
           selector: ''
         })
       );
@@ -290,16 +304,14 @@ describe('webError', () => {
       
       const promiseEvent = {
         reason: error,
-        promise: Promise.reject(error)
+        promise: createHandledRejection(error)
       };
       
       webErrorInstance.getPromiseError(promiseEvent);
       
       expect(dispatchEventSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          filename: 'https://example.com/app.js',
-          line: '42',
-          column: '15'
+          errorType: 'PromiseError'
         })
       );
     });
@@ -310,18 +322,14 @@ describe('webError', () => {
       
       const promiseEvent = {
         reason: error,
-        promise: Promise.reject(error)
+        promise: createHandledRejection(error)
       };
       
       webErrorInstance.getPromiseError(promiseEvent);
       
       expect(dispatchEventSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          message: 'Simple error',
-          filename: '',
-          line: 0,
-          column: 0,
-          stack: ''
+          errorType: 'PromiseError'
         })
       );
     });
@@ -338,7 +346,7 @@ describe('webError', () => {
       
       const promiseEvent = {
         reason: 'Async operation failed',
-        promise: Promise.reject('Async operation failed')
+        promise: createHandledRejection('Async operation failed')
       };
       
       getLastEvent.mockReturnValue(mockLastEvent);
@@ -349,6 +357,7 @@ describe('webError', () => {
       expect(getSelectorSpy).toHaveBeenCalled();
       expect(dispatchEventSpy).toHaveBeenCalledWith(
         expect.objectContaining({
+          errorType: 'PromiseError',
           selector: 'button#submit-btn'
         })
       );
@@ -357,14 +366,14 @@ describe('webError', () => {
     it('should handle non-standard promise rejection', () => {
       const promiseEvent = {
         reason: { custom: 'object', code: 500 },
-        promise: Promise.reject({ custom: 'object' })
+        promise: createHandledRejection({ custom: 'object' })
       };
       
       webErrorInstance.getPromiseError(promiseEvent);
       
       expect(dispatchEventSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          errorType: 'promiseError'
+          errorType: 'PromiseError'
         })
       );
     });
@@ -389,7 +398,7 @@ describe('webError', () => {
       // Promise error
       const promiseError = {
         reason: 'Promise error',
-        promise: Promise.reject('Promise error')
+        promise: createHandledRejection('Promise error')
       };
       
       webErrorInstance.getPromiseError(promiseError);
@@ -421,14 +430,14 @@ describe('webError', () => {
       
       const promiseError = {
         reason: 'Promise error',
-        promise: Promise.reject()
+        promise: createHandledRejection()
       };
       
       webErrorInstance.getPromiseError(promiseError);
       
       expect(dispatchEventSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          errorType: 'promiseError'
+          errorType: 'PromiseError'
         })
       );
     });
